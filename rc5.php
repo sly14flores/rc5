@@ -157,19 +157,17 @@ class RC5 {
 		echo "C. $Cr4\n";
 		echo "D. $Dr4\n";
 		
-		$Ar5_x = RC5::strXor($Ar4,$Cr3);
-		$Ar5 = RC5::strXor($Ar4,$Ar5_x);
-		$Br5_x = RC5::strXor($Br4,$Cr3);
-		$Br5 = RC5::strXor($Br4,$Br5_x);
-		// $Cr5 = RC5::strXor($Br4,$Dr4);
-		// $Dr5 = RC5::strXor($Dr4,$Br4);	
+		$Ar5 = $Cr3;
+		$Br5 = $Ar3;
+		$Cr5 = $Dr3;
+		$Dr5 = $Br3;
 		
 		echo "\n";
 		echo "Round 5:\n";
 		echo "A. $Ar5\n";
 		echo "B. $Br5\n";
-		// echo "C. $Cr5\n";
-		// echo "D. $Dr5\n";		
+		echo "C. $Cr5\n";
+		echo "D. $Dr5\n";		
 
 	}
 	
