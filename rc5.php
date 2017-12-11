@@ -20,11 +20,13 @@ class RC5 {
 
 		$str_hex = $str;
 		$km_hex = $this->km;
-
+		// var_dump($str);
+		// var_dump($km_hex);
+		
 		if (strlen($km_hex) < strlen($str_hex)) {
 			$km_hex = str_pad($km_hex,strlen($str_hex),"0",STR_PAD_LEFT);	
 		}	
-
+		// var_dump($km_hex); exit();
 		$arr_pw_hex = str_split($str_hex);
 		$arr_km_hex = str_split($km_hex);
 
@@ -58,8 +60,9 @@ class RC5 {
 		$division = "";		
 		
 		$c = 0;
+		$d = count($xor_arr)/4;
 		foreach ($xor_arr as $i => $value) {
-			if ($c == 4) {
+			if ($c == $d) {
 				$divisions[] = $division;
 				$division = "";
 				$c = 0;				
@@ -79,8 +82,8 @@ class RC5 {
 	
 		$this->xor_value = RC5::kmXor($str_hex);
 		$xor = $this->xor_value;
-
-		$divisions = RC5::divisions($xor);		
+		
+		$divisions = RC5::divisions($xor);
 		
 		// Left Divisions	
 		$A = $divisions[0];
