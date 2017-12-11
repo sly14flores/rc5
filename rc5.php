@@ -50,15 +50,12 @@ class RC5 {
 		return join("",$arr_xor);
 		
 	}
-
-	public function encrypt($pw) {
-		
-		$this->xor_value = RC5::pwXor($pw);
-		$xor = $this->xor_value;
+	
+	private function divisions($xor) {
 		
 		$xor_arr = str_split($xor);
 		$divisions = [];
-		$division = "";
+		$division = "";		
 		
 		$c = 0;
 		foreach ($xor_arr as $i => $value) {
@@ -71,6 +68,17 @@ class RC5 {
 			$c++;
 			if (count($xor_arr)==($i+1)) $divisions[] = $division;
 		}
+		
+		return $divisions;
+		
+	}
+	
+	public function encrypt($pw) {
+		
+		$this->xor_value = RC5::pwXor($pw);
+		$xor = $this->xor_value;
+
+		$divisions = RC5::divisions($xor);
 
 		// Left Divisions	
 		$A = $divisions[0];
@@ -167,8 +175,85 @@ class RC5 {
 		echo "A. $Ar5\n";
 		echo "B. $Br5\n";
 		echo "C. $Cr5\n";
-		echo "D. $Dr5\n";		
+		echo "D. $Dr5\n";
 
+		return $Ar5.$Br5.$Cr5.$Dr5;
+
+	}
+	
+	public function decrypt($enc) {
+		
+		echo "Decryption\n";
+		
+		$divisions = RC5::divisions($enc);
+
+		$Ar5 = $divisions[0];
+		$Br5 = $divisions[1];
+		$Cr5 = $divisions[2];
+		$Dr5 = $divisions[3];
+		
+		echo "\n";
+		echo "Round 5:\n";
+		echo "A. $Ar5\n";
+		echo "B. $Br5\n";
+		echo "C. $Cr5\n";
+		echo "D. $Dr5\n";
+		
+		$Ar3 = $Br5;
+		$Br3 = $Dr5;
+		$Cr3 = $Ar5;
+		$Dr3 = $Cr5;
+		
+		echo "\n";
+		echo "Round 3:\n";
+		echo "A. $Ar3\n";
+		echo "B. $Br3\n";
+		echo "C. $Cr3\n";
+		echo "D. $Dr3\n";
+
+		$Br2_lr = RC5::leftRotate($Br3);
+		$Br2 = RC5::strXor($Ar3,$Br2_lr);
+		$Ar2_rr = RC5::rightRotate($Ar3);
+		$Ar2 = RC5::strXor($Ar2_rr,$Br2);
+
+		$Cr2_n = RC5::negateStr($Cr3);
+		$Dr2_lr = RC5::leftRotate($Dr3);
+		$Dr2_x = RC5::strXor($Cr2_n,$Dr2_lr);		
+		$Dr2 = RC5::negateStr($Dr2_x);
+		
+		$Cr2_rr = RC5::rightRotate($Cr3);
+		$Cr2 = RC5::strXor($Cr2_rr,$Dr2_x);		
+		
+		echo "\n";
+		echo "Round 2:\n";
+		echo "A. $Ar2\n";
+		echo "B. $Br2\n";
+		echo "C. $Cr2\n";
+		echo "D. $Dr2\n";
+
+		$Br1_lr = RC5::leftRotate($Br2);
+		$Br1 = RC5::strXor($Ar2,$Br1_lr);
+		$Ar1_rr = RC5::rightRotate($Ar2);
+		$Ar1 = RC5::strXor($Ar1_rr,$Br1);
+		
+		$Dr1_lr = RC5::leftRotate($Dr2);
+		$Cr1_n = RC5::negateStr($Cr2);
+		$Dr1_x = RC5::strXor($Cr1_n,$Dr1_lr);
+		$Dr1 = RC5::negateStr($Dr1_x);
+		
+		$Cr1_rr = RC5::rightRotate($Cr2);
+		$Cr1 = RC5::strXor($Cr1_rr,$Dr1_x);
+		
+		// var_dump($Dr1_x);
+		
+		echo "\n";
+		echo "Round 1:\n";
+		echo "A. $Ar1\n";
+		echo "B. $Br1\n";
+		echo "C. $Cr1\n";
+		echo "D. $Dr1\n";		
+		
+		
 	}
 	
 	private function strXor($str1,$str2) {

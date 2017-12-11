@@ -8,8 +8,8 @@ $km = "4567812131415165";
 $rc5 = new RC5($km);
 
 echo "\n";
-$rc5->encrypt($pw);
-// echo $rc5->getXorValue();
+$enc = $rc5->encrypt($pw);
+$rc5->decrypt($enc);
 echo "\n";
 
 ?>
