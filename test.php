@@ -9,7 +9,8 @@ $rc5 = new RC5($km);
 
 echo "\n";
 $enc = $rc5->encrypt($pw);
-$rc5->decrypt($enc);
+$dec = $rc5->decrypt($enc);
+echo $dec;
 echo "\n";
 
 ?>
