@@ -20,13 +20,11 @@ class RC5 {
 
 		$str_hex = $str;
 		$km_hex = $this->km;
-		// var_dump($str);
-		// var_dump($km_hex);
 		
 		if (strlen($km_hex) < strlen($str_hex)) {
 			$km_hex = str_pad($km_hex,strlen($str_hex),"0",STR_PAD_LEFT);	
 		}	
-		// var_dump($km_hex); exit();
+
 		$arr_pw_hex = str_split($str_hex);
 		$arr_km_hex = str_split($km_hex);
 
@@ -56,11 +54,12 @@ class RC5 {
 	private function divisions($xor) {
 		
 		$xor_arr = str_split($xor);
+
 		$divisions = [];
 		$division = "";		
 		
 		$c = 0;
-		$d = count($xor_arr)/4;
+		$d = ceil(count($xor_arr)/4);
 		foreach ($xor_arr as $i => $value) {
 			if ($c == $d) {
 				$divisions[] = $division;
@@ -77,14 +76,22 @@ class RC5 {
 	}
 	
 	public function encrypt($str) {
-
+		
+		$a = "ABCDE";
+		$b = "ABC";
+		
+		$x = RC5::strXor2($a,$b);
+		var_dump($x);
+		
+		exit();
+		
 		$str_hex = strtoupper(bin2hex($str));
 	
 		$this->xor_value = RC5::kmXor($str_hex);
 		$xor = $this->xor_value;
 		
 		$divisions = RC5::divisions($xor);
-		
+
 		// Left Divisions	
 		$A = $divisions[0];
 		$B = $divisions[1];
@@ -275,9 +282,7 @@ class RC5 {
 		// echo "C. $C\n";
 		// echo "D. $D\n";		
 
-		$pt = $A.$B.$C.$D;	
-		// echo "\n";
-		// echo $pt;
+		$pt = $A.$B.$C.$D;
 		
 		$dec = RC5::kmXor($pt);	
 		
@@ -299,6 +304,35 @@ class RC5 {
 		return $str;
 		
 	}
+	
+	private function strXor2($str1,$str2) {
+
+		$str1_arr = str_split($str1);
+		$str2_arr = str_split($str2);
+		
+		$str1_ = $str1_arr;
+		$str2_ = $str2_arr;
+		if (count($str1_arr) != count($str2_arr)) {
+			if (count($str1_arr) > count($str2_arr)) {
+				$str1_ = $str1_arr;
+				$str2_ = $str2_arr;
+			}
+			if (count($str2_arr) > count($str1_arr)) {
+				$str1_ = $str2_arr;
+				$str2_ = $str1_arr;		
+			}
+		}
+
+		$str = "";
+		foreach ($str1_ as $k => $f) {
+			if (isset($str2_[$k])) $charXor = RC5::charXor($str1_[$k],$str2_[$k]);
+			else $charXor = $str1_[$k];
+			$str .= $charXor;	
+		}		
+
+		return $str;
+
+	}	
 	
 	private function charXor($char1,$char2) {
 		
