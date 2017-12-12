@@ -77,14 +77,6 @@ class RC5 {
 	
 	public function encrypt($str) {
 		
-		$a = "ABCDE";
-		$b = "ABC";
-		
-		$x = RC5::strXor2($a,$b);
-		var_dump($x);
-		
-		exit();
-		
 		$str_hex = strtoupper(bin2hex($str));
 	
 		$this->xor_value = RC5::kmXor($str_hex);
@@ -291,6 +283,14 @@ class RC5 {
 	}
 	
 	private function strXor($str1,$str2) {
+
+		$str = dechex(hexdec($str1) ^ hexdec($str2));
+		
+		return strtoupper($str);
+
+	}	
+	
+	private function strXor_($str1,$str2) {
 	
 		$str1_arr = str_split($str1);
 		$str2_arr = str_split($str2);
@@ -303,35 +303,6 @@ class RC5 {
 		
 		return $str;
 		
-	}
-	
-	private function strXor2($str1,$str2) {
-
-		$str1_arr = str_split($str1);
-		$str2_arr = str_split($str2);
-		
-		$str1_ = $str1_arr;
-		$str2_ = $str2_arr;
-		if (count($str1_arr) != count($str2_arr)) {
-			if (count($str1_arr) > count($str2_arr)) {
-				$str1_ = $str1_arr;
-				$str2_ = $str2_arr;
-			}
-			if (count($str2_arr) > count($str1_arr)) {
-				$str1_ = $str2_arr;
-				$str2_ = $str1_arr;		
-			}
-		}
-
-		$str = "";
-		foreach ($str1_ as $k => $f) {
-			if (isset($str2_[$k])) $charXor = RC5::charXor($str1_[$k],$str2_[$k]);
-			else $charXor = $str1_[$k];
-			$str .= $charXor;	
-		}		
-
-		return $str;
-
 	}	
 	
 	private function charXor($char1,$char2) {
@@ -356,7 +327,7 @@ class RC5 {
 	}
 	
 	private function leftRotate($str) {
-		
+
 		$charBin = $this->charBin;
 		$binChar = $this->binChar;			
 		
